@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora de Hidratação - Holliday-Segar</title>
+</head>
+<body>
+  <h2>Calculadora de Hidratação Venosa (Holliday-Segar)</h2>
+
+  <label for="peso">Peso (kg):</label>
+  <input type="number" id="peso" step="0.1"><br><br>
+
+  <label for="cota">Cota hídrica (opcional, mL/kg/dia):</label>
+  <input type="number" id="cota" step="1"><br><br>
+
+  <label for="percentual">Porcentagem da cota (%):</label>
+  <input type="number" id="percentual" value="100" step="1"><br><br>
+
+  <button onclick="calcular()">Calcular</button>
+
+  <h3>Resultado:</h3>
+  <pre id="resultado"></pre>
+
+  <script>
+    function calcular() {
+      const peso = parseFloat(document.getElementById('peso').value);
+      const cota = parseFloat(document.getElementById('cota').value);
+      const percentual = parseFloat(document.getElementById('percentual').value);
+
+      let volumeDiario = 0;
+
+      if (isNaN(peso) || peso <= 0) {
+        document.getElementById('resultado').innerText = "Informe um peso válido.";
+        return;
+      }
+
+      if (!isNaN(cota) && cota > 0) {
+        volumeDiario = peso * cota;
+      } else {
+        if (peso <= 10) {
+          volumeDiario = peso * 100;
+        } else if (peso <= 20) {
+          volumeDiario = 1000 + (peso - 10) * 50;
+        } else {
+          volumeDiario = 1500 + (peso - 20) * 20;
+        }
+      }
+
+      let volumeAjustado = volumeDiario;
+
+      if (!isNaN(percentual) && percentual > 0) {
+        volumeAjustado = volumeDiario * (percentual / 100);
+      }
+
+      const vazao = (volumeAjustado / 24).toFixed(2);
+
+      document.getElementById('resultado').innerText =
+        `Volume diário total: ${volumeDiario.toFixed(0)} mL\n` +
+        `Percentual aplicado: ${percentual}%\n` +
+        `Volume ajustado: ${volumeAjustado.toFixed(0)} mL\n` +
+        `Vazão: ${vazao} mL/h`;
+    }
+  </script>
+</body>
+</html>
